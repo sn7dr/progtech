@@ -3,6 +3,9 @@ package amoba;
 public class Main {
     public static void main(String[] args) {
 
+        int rows = 5;
+        int cols = 5;
+
         // Player teszt
         System.out.println("Player teszt");
         Player current = Player.X; // X kezd
@@ -33,14 +36,16 @@ public class Main {
         if (p1.hashCode() == p2.hashCode()) {
             System.out.println("A hashCode egyezik");
         } else {
-            System.out.println("A hashCode különbözik (hiba)");
+            System.out.println("A hashCode különbözik");
         }
 
         // BOARD TESZT
 
         System.out.println("\nBoard teszt");
 
-        Board board = new Board(); // üres 3x3 táblát hoz létre
+        //Board board = new Board(10,10); // alap 10x10 táblát hoz létre
+        Board board = new Board(rows,cols); // custom táblát hoz létre
+
 
         System.out.println("Üres tábla:");
         System.out.println(board);  // toString() hívódik → pontokkal kirajzolja a mezőket
@@ -51,14 +56,13 @@ public class Main {
         // O bal felső sarokba
         board.place(new Position(0, 0), Player.O);
 
-        System.out.println("2 lépés után:");
         System.out.println(board);  // újra kirajzolja a táblát
 
 
         // GAME TESZT
         System.out.println("\nGame teszt");
 
-        Game g = new Game(); // X kezd
+        Game g = new Game(rows, cols); // X kezd
 
         System.out.println(g.getCurrentPlayer()+ " következik\n");
         g.playOneMove("a3");
@@ -71,6 +75,16 @@ public class Main {
         System.out.println(g.getCurrentPlayer()+ " következik\n");
         g.playOneMove("c3");
         System.out.println(g.getBoard());
+
+
+        // Szándékos failtest - foglaltmező trigger
+        String input = "c3";
+        boolean ok = g.playOneMove(input);
+
+        if (!ok) {
+            Position pos = Position.converter(input);
+            System.out.println("Nem sikerült a lépés, mert foglalt: " + pos);
+        }
 
         System.out.println("\nTeszt vége");
     }

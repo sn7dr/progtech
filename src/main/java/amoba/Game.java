@@ -5,9 +5,15 @@ public class Game {
     private final Board board;       // a tábla
     private Player currentPlayer;    // ki lép
 
+    // alapértelmezett játék -  10x10-es tábla
     public Game() {
-        this.board = new Board();
-        this.currentPlayer = Player.X; // X kezd
+        this(10, 10); // továbbhívás a másik konstruktorra
+    }
+
+    // általános konstruktor - tetszőleges N sor, M oszlop
+    public Game(int rows, int cols) {
+        this.board = new Board(rows, cols);
+        this.currentPlayer = Player.X; // X kezd (később automatikus közép lépés)
     }
 
     // A Main majd megadja a felhasználó inputját plb3
