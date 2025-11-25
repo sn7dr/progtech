@@ -62,6 +62,33 @@ public class Board {
         return pos.row() >= 0 && pos.row() < rows
                 && pos.col() >= 0 && pos.col() < cols;
     }
+    // tábla kiírása koordinátákkal (a-j felül, 1-10 oldalt)
+    public String toStringWithCoords() {
+        StringBuilder sb = new StringBuilder();
+
+        // felső betűsor
+        sb.append("   "); // behúzás
+        for (int c = 0; c < cols; c++) {
+            char ch = (char) ('a' + c);
+            sb.append(ch).append(" ");
+        }
+        sb.append("\n");
+
+        // sorok
+        for (int r = 0; r < rows; r++) {
+            // sorszám kiírás
+            if (r + 1 < 10) sb.append(" "); // igazít
+            sb.append(r + 1).append(" ");
+
+            for (int c = 0; c < cols; c++) {
+                Player p = cells[r][c];
+                sb.append(p == null ? "\u00B7" : p.toString());
+                sb.append(" ");
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
 
     // kiírás a tábláról
     @Override

@@ -1,4 +1,5 @@
 package amoba;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -120,6 +121,65 @@ public class Main {
         Game game2 = new Game(rows, cols);
         System.out.println(game2.getBoard());
 
+        // game test - ciklussal
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("\nInteraktív játék (X = ember, O = bot)");
+        System.out.println("Kilépéshez írd be: q\n");
+
+        Game game3 = new Game(rows, cols); // új játék, tiszta tábla, X középen
+
+        while (!game3.isGameOver()) {
+            System.out.println(game3.getBoard().toStringWithCoords());
+            System.out.println(game3.getCurrentPlayer() + " következik.");
+
+            if (game3.getCurrentPlayer() == Player.X) {
+                System.out.print("Add meg a lépésed (pl. f5), vagy 'q' kilépéshez: ");
+                String line = scanner.nextLine().trim();
+
+                if (line.equalsIgnoreCase("q")) {
+                    System.out.println("Kilépés a játékból.");
+                    break;
+                }
+                if (line.isEmpty()) {
+                    System.out.println("Üres input, próbáld újra.");
+                    continue;
+                }
+
+                boolean realok = game3.playOneMove(line);
+                System.out.println("Lépés: " + line + (realok ? " siker" : " fail"));
+
+                if (!realok) {
+                    System.out.println("Érvénytelen lépés (foglalt mező vagy nincs szomszéd), próbáld újra.\n");
+                }
+
+            } else { // O - bot
+                System.out.println("Bot lépése...");
+                Position realbotPos = game3.botMove();
+
+                if (realbotPos == null) {
+                    System.out.println("A bot nem tud érvényeset lépni, patt helyzet (döntetlen).");
+                    break;
+                }
+
+                char colLetter = (char) ('a' + realbotPos.col());
+                int rowNumber = realbotPos.row() + 1;
+                System.out.println("Bot ide lépett: " + colLetter + rowNumber + " " + realbotPos + "\n");
+            }
+        }
+
+        // ha valódi győzelem miatt állt le
+        if (game3.isGameOver()) {
+            System.out.println("\nVégső tábla:");
+            System.out.println(game3.getBoard().toStringWithCoords());
+            if (game3.getWinner() != null) {
+                System.out.println("Játék vége! Győztes: " + game3.getWinner());
+            } else {
+                System.out.println("Játék vége! Döntetlen.");
+            }
+        }
+
         System.out.println("\nTeszt vége");
+
     }
 }
