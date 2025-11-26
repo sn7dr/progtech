@@ -50,7 +50,24 @@ public class Game {
 
         currentPlayer = Player.O;         // következő player
     }
+    // privát konstruktor - betöltött táblából
+    private Game(Board board, Player currentPlayer) {
+        this.board = board;
+        this.currentPlayer = currentPlayer;
+        this.gameOver = false;
+        this.winner = null;
 
+        // szabad mezők újraszámolása
+        this.freePositions = new ArrayList<>();
+        for (int r = 0; r < board.rows(); r++) {
+            for (int c = 0; c < board.cols(); c++) {
+                Position p = new Position(r, c);
+                if (board.isEmpty(p)) {
+                    freePositions.add(p);
+                }
+            }
+        }
+    }
     // Legalább 1 szomszéd mező (8 irány) legyen foglalt (X vagy O)
     private boolean hasNeighbor(Position pos) {
         int[] dirs = {-1, 0, 1};
@@ -218,7 +235,86 @@ public class Game {
 
         return chosen; // visszaadjuk, hova lépett a bot (log, print)
     }
+    // játék mentése fájlba - első sor: sorok space oszlopok space következő játékos (X vagy O)
+    // utána \n és a tábla sorai jelekkel
+    public void saveToFile(String path) {
+        try {
+            StringBuilder sb = new StringBuilder();
 
+            // fejlec
+            sb.append(board.rows())
+                    .append(" ")
+                    .append(board.cols())
+                    .append(" ")
+                    .append(currentPlayer)  // X vagy O
+                    .append("\n");
+
+            // tábla tartalma
+            for (int r = 0; r < board.rows(); r++) {
+                for (int c = 0; c < board.cols(); c++) {
+                    Position p = new Position(r, c);
+                    Player cell = board.get(p);
+                    sb.append(cell == null ? "\u00B7" : cell.toString());
+                }
+                sb.append("\n");
+            }
+
+            java.nio.file.Files.writeString(java.nio.file.Path.of(path), sb.toString());
+
+        } catch (Exception e) {
+            throw new RuntimeException("Hiba a játék mentése közben: " + e.getMessage(), e);
+        }
+    }
+    // játék betöltése fájlból
+    public static Game loadFromFile(String path) {
+        try {
+            java.util.List<String> lines =
+                    java.nio.file.Files.readAllLines(java.nio.file.Path.of(path));
+
+            if (lines.isEmpty()) {
+                throw new IllegalArgumentException("Üres fájl: " + path);
+            }
+
+            // első sor: sor, oszlop, kövi játékos
+            String header = lines.get(0).trim();
+            String[] parts = header.split("\\s+");
+            if (parts.length < 3) {
+                throw new IllegalArgumentException("Hibás fejléc sor: " + header);
+            }
+
+            int rows = Integer.parseInt(parts[0]);
+            int cols = Integer.parseInt(parts[1]);
+            Player nextPlayer = Player.valueOf(parts[2]); // "X" vagy "O"
+
+            Board board = new Board(rows, cols);
+
+            // tábla sorok betöltése
+            for (int r = 0; r < rows; r++) {
+                String line = lines.get(r + 1);
+                if (line.length() < cols) {
+                    throw new IllegalArgumentException("Túl rövid sor a fájlban: " + line);
+                }
+                for (int c = 0; c < cols; c++) {
+                    char ch = line.charAt(c);
+                    if (ch == 'X') {
+                        board.place(new Position(r, c), Player.X);
+                    } else if (ch == 'O') {
+                        board.place(new Position(r, c), Player.O);
+                    } else {
+                        // bármi más jel ( üres pont, stb.) - üres
+                    }
+                }
+            }
+
+            // új Game object a betöltött táblával és a következő játékossal
+            return new Game(board, nextPlayer);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Hiba a játék betöltése közben: " + e.getMessage(), e);
+        }
+    }
+
+    // getterek
     public Board getBoard() {
         return board;
     }

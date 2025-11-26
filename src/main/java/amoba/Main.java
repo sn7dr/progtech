@@ -179,7 +179,56 @@ public class Main {
             }
         }
 
+
+        // savegame és load teszt - 10-10 standrd boarddal
+        System.out.println("\nMentés/betöltés gyors teszt");
+
+        Game saveLoadTest = new Game(rows, cols); //10-10
+
+        System.out.println("Kezdő tábla (X középen):");
+        System.out.println(saveLoadTest.getBoard().toStringWithCoords());
+
+        System.out.println("Bot lép:");
+        saveLoadTest.botMove();
+        System.out.println(saveLoadTest.getBoard().toStringWithCoords());
+
+        // bekért lépés
+        Scanner scan = new Scanner(System.in);
+        System.out.print("Adj meg egy lépést (pl. f5): ");
+        String userStep = scan.nextLine().trim();
+
+        // lépés check
+        boolean okStep = saveLoadTest.playOneMove(userStep);
+        System.out.println("Lépés eredménye: " + (okStep ? "siker" : "fail"));
+
+        saveLoadTest.botMove();
+
+        System.out.println("Tábla mentés előtt:");
+        System.out.println(saveLoadTest.getBoard().toStringWithCoords());
+
+        // mentés
+        saveLoadTest.saveToFile("board.txt");
+        System.out.println("Játék elmentve: board.txt");
+
+        // betöltés
+        Game loadedGame = Game.loadFromFile("board.txt");
+
+        System.out.println("Betöltött tábla:");
+        System.out.println(loadedGame.getBoard().toStringWithCoords());
+        System.out.println("Következő játékos (betöltve): " + loadedGame.getCurrentPlayer());
+
+        // betöltés után teszt mégegszer - 1 inputra
+
+        System.out.print("Adj meg egy lépést (pl. f5): ");
+        userStep = scan.nextLine().trim();
+
+        okStep = loadedGame.playOneMove(userStep);
+        System.out.println("Lépés eredménye: " + (okStep ? "siker" : "fail"));
+
+        System.out.println("Final tábla:");
+        System.out.println(loadedGame.getBoard().toStringWithCoords());
         System.out.println("\nTeszt vége");
+
 
     }
 }
