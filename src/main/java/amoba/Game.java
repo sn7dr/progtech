@@ -6,14 +6,14 @@ import java.util.Random;
 
 public class Game {
 
-    private final Board board;        // a tábla
-    private Player currentPlayer;     // ki lép
-    private final List<Position> freePositions; // összes SZABAD mező
+    private final Board board;
+    private Player currentPlayer;
+    private final List<Position> freePositions; // összes szabad mező
     private final Random rand = new Random();   // random a botnak
 
     // játék vége flag + győztes
     private boolean gameOver;         // true ha már vége a játéknak
-    private Player winner;            // ki nyert (ha null, akkor még nincs győztes vagy patt)
+    private Player winner;            // ha null, akkor még nincs győztes vagy patt
 
     // alapértelmezett játék - 10x10-es tábla
     public Game() {
@@ -36,7 +36,7 @@ public class Game {
         }
 
         // automatikus kezdőlépés középre X-szel
-        placeStartingX();             // X középre
+        placeStartingX();
     }
 
     // középre helyezi az X-et - automata kezdés
