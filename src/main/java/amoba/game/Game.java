@@ -11,7 +11,7 @@ import amoba.util.MoveRulesUtil;
 import amoba.util.PositionUtil;
 
 /**
- * Game  - tablainfo, jatekosok, lepesek, win-check, bot
+ * Game  - tablainfo, jatekosok, lepesek, win-check, bot, usernév
  */
 public class Game {
 
@@ -32,10 +32,11 @@ public class Game {
     private Player winner;
 
     /**
-     * Alap konstruktor - 10x10
+     * Alap konstruktorok - 10x10
      */
     public Game() {
-        this(10, 10);
+        this(10, 10, "Mr X");
+
     }
 
     /**
@@ -43,42 +44,51 @@ public class Game {
      *
      * @param rows sorok szama
      * @param cols oszlopok szama
+     * @param playerXName player neve
      */
-    public Game(int rows, int cols) {
+    public Game(int rows, int cols, String playerXName) {
         this.board = new Board(rows, cols);
 
-        // jatekosok beallitasa
-        players[0] = new Player("Jatekos X", Symbol.X, 0);
-        players[1] = new Player("Jatekos O/Bot", Symbol.O, 0);
+        String effectiveName = (playerXName == null || playerXName.isBlank())
+                ? "Mr X"
+                : playerXName.trim();
+
+        players[0] = new Player(effectiveName, Symbol.X, 0);
+        players[1] = new Player("Mr Robot", Symbol.O, 0);
 
         this.gameOver = false;
         this.winner = null;
 
-        // kezdo X kozeppontban, utana O jon
         placeStartingX();
     }
 
+
     /**
-     * Privat konstruktor - betoltott tablahoz - alap loadgame-nél nem működik! - placestartingX miatt
+     * Privat konstruktor - betoltott tablahoz
      */
-    private Game(Board board, Symbol nextSymbol) {
+    private Game(Board board, Symbol nextSymbol, String playerXName) {
         this.board = board;
 
-        players[0] = new Player("Jatekos X", Symbol.X, 0);
-        players[1] = new Player("Jatekos O/Bot", Symbol.O, 0);
+        String effectiveName = (playerXName == null || playerXName.isBlank())
+                ? "Mr X"
+                : playerXName.trim();
+
+        players[0] = new Player(effectiveName, Symbol.X, 0);
+        players[1] = new Player("Mr Robot", Symbol.O, 0);
 
         this.gameOver = false;
         this.winner = null;
 
-        // kovetkezo jateos - x/o
+        // kovetkezo jatekos - X vagy O
         this.currentIndex = (nextSymbol == Symbol.X) ? 0 : 1;
     }
+
 
     /**
      * Betoltott jatek letrehozasa - GameSaveLoad utilra
      */
-    public static Game fromLoadedState(Board board, Symbol nextSymbol) {
-        return new Game(board, nextSymbol);
+    public static Game fromLoadedState(Board board, Symbol nextSymbol, String playerXName) {
+        return new Game(board, nextSymbol, playerXName);
     }
 
     /**
@@ -114,6 +124,12 @@ public class Game {
      */
     public Player getWinner() {
         return winner;
+    }
+    /**
+     * X játékos (index 0) – név mentéshez
+     */
+    public Player getXPlayer() {
+        return players[0];
     }
 
     /**

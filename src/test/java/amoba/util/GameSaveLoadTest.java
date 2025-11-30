@@ -26,7 +26,7 @@ class GameSaveLoadTest {
     @Test
     void testSaveAndLoadSimple() throws Exception {
         // feles táblával
-        Game game = new Game(5, 5);
+        Game game = new Game(5, 5, "Mr X");
 
         // step test
         Board board = game.getBoard();
@@ -54,7 +54,7 @@ class GameSaveLoadTest {
     @Test
     void testSaveAndLoadInitialGameState() throws Exception {
         // új játék save / loadgame - feles tála (autostat trigger X-en 2-2-re)
-        Game game = new Game(5, 5);
+        Game game = new Game(5, 5, "Mr X");
 
         Path temp = Files.createTempFile("amoba_initial_", ".txt");
         GameSaveLoad.saveGame(game, temp.toString());
