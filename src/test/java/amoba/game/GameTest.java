@@ -145,4 +145,18 @@ class GameTest {
         // assert
         assertNull(botPos, "Ha nem O jon, a bot nem lephet.");
     }
+    @Test
+    void testConstructorReplacesBlankNameWithDefault() {
+        Game game = new Game(10, 10, "   ");
+        assertEquals("Mr X", game.getXPlayer().getName(),
+                "Ures nev eseten a default 'Mr X'-et varjuk.");
+    }
+
+    @Test
+    void testConstructorReplacesNullNameWithDefault() {
+        Game game = new Game(10, 10, null);
+        assertEquals("Mr X", game.getXPlayer().getName(),
+                "Null nev eseten is a default 'Mr X'-et varjuk.");
+    }
+
 }

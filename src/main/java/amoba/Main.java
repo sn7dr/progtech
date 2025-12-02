@@ -226,10 +226,18 @@ public final class Main {
                 boolean ok = game.playOneMove(input);
                 if (!ok) {
                     System.out.println(
-                            "Ervenytelen lepes! (foglalt / nincs szomszéd / "
+                            "Ervenytelen lepes! (foglalt / nincs szomszed / "
                                     + "hibas formatum)"
                     );
+                    continue; // vissza a kovetkezo korre, patt-check ne fusson
                 }
+
+                // kulon patt kiiras userre
+                if (game.isGameOver() && game.getWinner() == null) {
+                    System.out.println("Nincs tobb ervenyes lepes – patt!");
+                    break;
+                }
+
             } else {
                 // bot
                 System.out.println("Bot lep...");

@@ -142,6 +142,15 @@ public final class Game {
     }
 
     /**
+     * Patt ellenorzes: van-e barmi ervenyes lepes meg.
+     *
+     * @return true, ha nincs tobb ervenyes lepes
+     */
+    public boolean isStalemate() {
+        return MoveRulesUtil.findValidMoves(board).isEmpty();
+    }
+
+    /**
      * Jatek vege flag.
      *
      * @return true, ha vege a jateknak
@@ -245,8 +254,8 @@ public final class Game {
 
         Symbol symbol = getCurrentPlayer().getSelectedSymbol();
         Cell cell = getCellAt(pos);
-        boolean ok = board.setCellSymbol(cell, symbol);
-        if (!ok) {
+
+        if (!board.setCellSymbol(cell, symbol)) {
             return false;
         }
 
@@ -254,6 +263,10 @@ public final class Game {
         if (WinChecker.isWinningMove(board, pos, symbol)) {
             gameOver = true;
             winner = getCurrentPlayer();
+        } else if (isStalemate()) {
+            // sehol nincs tobb ervenyes lepes - patt
+            gameOver = true;
+            winner = null;
         }
 
         // ha meg nincs vege, jatekos valtasa
@@ -282,8 +295,11 @@ public final class Game {
         // Bot choose validra
         Position chosen = bot.chooseMove(board, Symbol.O);
 
+        // pattkezeles
         if (chosen == null) {
-            // patt - nincs hova lepni - validMoves ures
+            // nincs hova lépni - patt
+            gameOver = true;
+            winner = null; // döntetlen
             return null;
         }
 
@@ -295,6 +311,10 @@ public final class Game {
         if (WinChecker.isWinningMove(board, chosen, Symbol.O)) {
             gameOver = true;
             winner = getCurrentPlayer();
+        } else if (isStalemate()) {
+            // nincs tobb ervenyes lepes - patt
+            gameOver = true;
+            winner = null;
         }
 
         // ha meg nincs vege, jatekos valtasa
