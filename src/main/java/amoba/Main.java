@@ -284,6 +284,17 @@ public final class Main {
         // ===========================
         // GAME END
         // ===========================
+
+        // ha a jatek NINCS vege NE toroljuk a mentest
+        if (!game.isGameOver()) {
+            System.out.println(
+                    "\nJatek megszakitva. A mentes (ha keszult) megmarad: "
+                            + DEFAULT_SAVE
+            );
+            return;
+        }
+
+        // ide csak akkor jutunk, ha gameOver = true (win / patt)
         try {
             Files.deleteIfExists(Path.of(DEFAULT_SAVE));
             System.out.println(
